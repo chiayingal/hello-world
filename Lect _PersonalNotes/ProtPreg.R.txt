@@ -1,0 +1,189 @@
+# Example dataset 1 from the back of the lecture notes brick.
+
+# Protein levels in pregnancy
+
+# Read in the data:
+
+protpreg <- read.table("F:/STAT/STAT2008/Datasets (text)/protpreg.txt", header= F)
+protpreg
+
+# Correct the variable names:
+
+names(protpreg) <- c("protein", "gestation")
+protpreg
+
+# Attach and plot the data:
+
+attach(protpreg)
+plot(gestation, protein)
+
+# Or do it again with better labels:
+plot(gestation, protein, xlab="Gestation (weeks)", ylab="Protein Level (mg/ml)", main="Protein levels in pregnancy")
+
+# A new approach to finding the least squares estimates:
+
+help(lsfit)
+
+# This suggest we should use the more modern version lm() instead of lsfit():
+
+help(lm)
+
+# How do we use lm():
+
+protpreg.lm <- lm(protein ~ gestation)
+
+# This creates a stored model object:
+
+protpreg.lm
+attributes(protpreg.lm)
+protpreg.lm$coefficients
+protpreg.lm$coef
+coef(protpreg.lm)
+
+# Add the model to the plot we created earlier:
+
+abline(protpreg.lm$coef)
+
+# Why use lm instead of lsfit? Because it gives better output:
+
+plot(protpreg.lm)
+
+
+anova(protpreg.lm)
+
+summary(protpreg.lm)
+
+# We will go through all of these bits of output in detail, 
+# especially the plots, later in the course.
+ 
+# Note the F test in the ANOVA table has exactly the same p-value as the
+# t test on the slope coefficient in the table of coefficients in the
+# summary output. This is because in the context of simple linear regression
+# they are directly equivalent tests. They are also both equivalent to the
+# standard (Pearson) test on the correlation coefficient:
+
+cor.test(gestation, protein)
+
+# Note that all of these bits of output also come with stored objects 
+# we can also access for later calculations:
+
+names(protpreg.lm)
+
+names(anova(protpreg.lm))
+anova(protpreg.lm)$"Mean Sq"
+MSE <- anova(protpreg.lm)$"Mean Sq"[2]
+MSE
+
+names(summary(protpreg.lm))
+summary(protpreg.lm)$sigma
+RSE <- summary(protpreg.lm)$sigma
+RSE
+
+RSE*RSE
+
+# i.e. the residual standard error (sigma) is the square root of the
+# mean square error (our best estimate of the error variance).
+
+# And the coefficient of determination (r-squared) is equal to the 
+# square of the coefficient of correlation:
+
+summary(protpreg.lm)$r.squared
+
+names(cor.test(gestation, protein))
+cor.test(gestation, protein)$estimate
+cor.test(gestation, protein)$estimate^2
+
+# Similarly we could use these stored values to calculate 
+# 95% confidence intervals for the model parameters:
+
+summary(protpreg.lm)$coef
+attributes(summary(protpreg.lm)$coef)
+
+estimates <- coef(protpreg.lm)
+estimates
+
+std.errors <- summary(protpreg.lm)$coef[,2]
+std.errors
+
+tquantile <- qt(0.025, protpreg.lm$df.residual)
+tquantile
+
+tquantile <- qt(0.975, protpreg.lm$df.residual)
+tquantile
+
+conf.intervals <- cbind(estimates - tquantile * std.errors, estimates + tquantile * std.errors)
+conf.intervals
+attributes(conf.intervals)
+dimnames(conf.intervals)
+dimnames(conf.intervals)[[2]]
+dimnames(conf.intervals)[[2]] <- c("lower 95% CI", "upper 95% CI")
+conf.intervals
+
+# We can also calculate prediction and confidence intervals:
+
+help(predict)
+help(predict.lm)
+
+# By default, predict() will make predictions for the existing x values:
+predict(protpreg.lm)
+fitted(protpreg.lm)
+
+# But we can also use predict() to get standard errors for the fitted values:
+predict(protpreg.lm, se.fit=T)
+
+# And we can produce confidence intervals for new values of x:
+
+range(gestation)
+newg <- c(0:365)/10
+newg.ci <- predict(protpreg.lm, newdata=data.frame(gestation=newg), interval="confidence")
+newg.ci
+
+# Or prediction intervals:
+
+newg.pi <- predict(protpreg.lm, newdata=data.frame(gestation=newg), interval="prediction")
+newg.pi
+
+# Create a new plot to show the model and these various intervals:
+
+range(newg.pi)
+
+# Now to plot the data, the model and these intervals.
+
+# First create a blank plot of the right dimensions
+
+plot(c(1.34,35),range(newg.pi), type="n", xlab="Gestation (weeks)", ylab="Protein Level (mg/ml)", main="Protein levels in pregnancy")
+
+# Then add the data:
+
+points(gestation, protein)
+
+# Now add the model:
+
+abline(protpreg.lm$coef)
+
+# And the confidence intervals:
+
+lines(newg, newg.ci[,"lwr"], lty=2)
+lines(newg, newg.ci[,"upr"], lty=2)
+
+# And the prediction intervals:
+
+lines(newg, newg.pi[,"lwr"], lty=3)
+lines(newg, newg.pi[,"upr"], lty=3)
+
+# Also add a horizontal axis:
+
+abline(0,0)
+
+# And a line at the mean protein level:
+
+abline(mean(protein),0, lty=4)
+
+# Note this crosses the regression model at the mean gestation:
+
+mean(gestation)
+
+# And finally, a legend to help people make sense of all the lines:
+
+legend(2, 1.3, c("SL regression model", "95% confidence intervals", "95% prediction intervals", "mean(protein level)"), lty=1:4)
+

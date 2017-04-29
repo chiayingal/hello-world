@@ -1,0 +1,60 @@
+# Example on highly influential points.
+
+# These data have been "made up" to illustrate a point.
+
+X <- c(1:18,46)
+Y <- c(6.982933082,9.912253755,13.123901,14.13841463,18.96916063,23.56787716,24.56079674,28.15757763,33.2661378,34.42390825,36.54348875,41.65607754,41.69287387,45.91341774,48.33245269,53.56300495,54.36758661,58.27525138,141.7646798)
+data.frame(X,Y)
+
+# Plot the data:
+
+plot(X, Y)
+
+# Bar plot of the leverage values (which just rely on the X values):
+
+barplot(hat(X), names.arg=X)
+abline(h=4/length(X))
+
+# Try an initial model:
+
+example.lm <- lm(Y ~ X)
+plot(example.lm)
+plot(example.lm, which=4)
+
+plot(X, Y)
+abline(example.lm$coef)
+
+# Observation 19 has high leverage, but does appear to following the 
+# same model as the rest of the data. Is it really influential:
+
+example.lm
+
+example.lm2 <- lm(Y[-19] ~ X[-19])
+example.lm2
+
+abline(example.lm2$coef)
+
+# What if we try a more extreme example:
+
+Y
+newY <- Y
+newY[19] <- 170
+newY
+
+plot(X, newY)
+example.lm3 <- lm(newY ~ X)
+example.lm3
+abline(example.lm3$coef)
+
+example.lm4 <- lm(newY[-19] ~ X[-19])
+example.lm4
+abline(example.lm4$coef)
+
+plot(example.lm3)
+plot(example.lm4)
+
+# Observation 19 has exactly the same high leverage as before (as the X
+# value hasn't changed), but it is now also highly influential  
+# (by definition) as it has had obvious influence on the calculation
+# of the coefficients of the model. 
+

@@ -1,0 +1,62 @@
+# Example 5 from page 17 of chapter 2 of the lecture notes:
+# Body fat data (see description in the "brick")
+
+bodyfat <- read.table("F:/STAT/STAT2008/Datasets (text)/bft.txt",header=T)
+bodyfat
+
+# Attach the data so we can access each of the various columns by name:
+
+attach(bodyfat)
+
+# To explore the data graphically in R, draw a scatterplot matrix:
+
+pairs(bodyfat)
+
+# A simple initial multiple regression model:
+
+bodyfat.lm <- lm(BodyFat ~ Triceps + Thigh + Midarm)
+bodyfat.lm
+
+plot(bodyfat.lm)
+
+plot(bodyfat.lm, which=4)
+
+anova(bodyfat.lm)
+
+# Again, we will come back to this example again later in the course;
+# for now, we will simply use this initial model to illustrate the
+# different studentised residuals:
+
+data.frame(BodyFat,fitted=fitted(bodyfat.lm),residual=residuals(bodyfat.lm),int.studentised=rstandard(bodyfat.lm),ext.studentised=rstudent(bodyfat.lm))
+
+plot(fitted(bodyfat.lm), rstudent(bodyfat.lm))
+abline(0,0, lty=2)
+title("Externally Studentised Residual Plot")
+
+# Are these studentised residuals values too large? Note the mistake
+# in the brick - the residual degrees of freedom are 16, not 15:
+
+bodyfat.lm$df
+qt(0.975, bodyfat.lm$df)
+
+# Or a Bonferroni corrected version:
+
+qt(1-0.05/(2*20), bodyfat.lm$df)
+
+# Create an indicator variable for the 14th observation:
+
+obs14 <- c(rep(0,13), 1, rep(0,6))
+obs14
+
+# Use this indicator variable to test if observation 14 is an outlier
+# in the context of the above model:
+
+bodyfat.lmO <- lm(BodyFat ~ Triceps + Thigh + Midarm + obs14)
+anova(bodyfat.lmO)
+
+plot(bodyfat.lmO)
+
+plot(bodyfat.lmO, which=4)
+
+round(data.frame(Obs14=obs14,BodyFat,fitted=fitted(bodyfat.lmO),residual=residuals(bodyfat.lmO),int.studentised=rstandard(bodyfat.lmO),ext.studentised=rstudent(bodyfat.lmO)),7)
+
