@@ -1,0 +1,79 @@
+setwd("C:/...")   #copy the data file "Car Insurance GLM data.csv" to a folder and then enter the folder address in the setwd statement. 
+
+
+### Read in the data 
+
+Insdata<-read.table("Car Insurance GLM data.csv",header=T,sep=",")
+
+attach(Insdata)
+
+
+### Fit the GLM using a gamma distribution. 
+
+	Insdata.fit1<-glm(Claim~Vehicle+Policyholder,family=Gamma(link=inverse))		
+
+### this gives a summary of the fit assuming a gamma error distribution. 
+
+	summary(Insdata.fit1)
+
+### this gives a summary of the fit assuming an exponential error distribution (by fixing the dispersion at 1)
+### this changes the std errors but not the parameter estimates.
+
+	summary(Insdata.fit1, dispersion=1)	 
+
+
+### Find the fitted values for the model
+
+	fitted(Insdata.fit1)						 
+
+
+### Find a predicted value for vehicle = 3, policyholder = 40
+
+    ## Choose the values for the predictors
+
+	u0data <- data.frame(Vehicle=3, Policyholder=40)
+
+    ## Find a predicted value where the prediction is on the scale of the linear predictor
+
+	u0pred.lp <- predict(Insdata.fit1,u0data)
+
+    ## Find a predicted value where the prediction is on the scale of the response
+
+	predict(Insdata.fit1,u0data,type="response")
+
+
+### Find the variance and standard error of the estimates for a predicted value of vehicle = 3, policyholder = 40
+
+	u0    <- c(1, 3, 40)
+	varu0 <- t(u0)%*%summary(Insdata.fit1)$cov.unscaled%*%u0 
+	seu0  <- sqrt(varu0)
+
+### Find the CI for the predicted value
+
+	u0CI <- c(1/(u0pred.lp +1.96*seu0), 1/(u0pred.lp -1.96*seu0))
+
+
+
+### Carry out analysis of deviance on the fit. This gives deviances for the model
+
+	anova(Insdata.fit1)
+
+
+    ## Compare nested models.
+
+	Insdata.fit1<-glm(Claim~Vehicle+Policyholder,family=Gamma(link=inverse))		
+	Insdata.fit2<-glm(Claim~Policyholder ,family=Gamma(link=inverse))	
+			
+
+	anova(Insdata.fit1,Insdata.fit2)
+
+
+### Plot out the Pearson residuals
+
+	plot(Insdata.fit1$linear.predictors, residuals(Insdata.fit1,"pearson"),xlab="Linear Predictor",ylab="Pearson Residuals")
+
+### Plot out the Deviance residuals
+
+	plot(Insdata.fit1$linear.predictors, residuals(Insdata.fit1,"deviance"),xlab="Linear Predictor",ylab="Deviance Residuals")
+
+
