@@ -1,0 +1,74 @@
+#Worksheet 3&4
+rm(list=ls())
+#q1a
+q1<-rnorm(1000,3,4)
+#another way can make x<-c(-499:500) and then q1<-rnorm(x). hist(q1). By doing this, we are assuming it has been standardised
+
+#q1b
+hist(q1)
+
+#q1c
+max(q1)
+min(q1)
+
+#q1d
+hist(q1,breaks=seq(floor(min(q1)),floor(max(q1)+1),1))
+#as bin-width decrease the histogram get smoother
+
+#q1e
+#It is to approximate the normal distribution curve. 
+grid<-seq(floor(min(q1)),floor(max(q1)+1),1)
+#normal density function use 'dnorm(grid,mean,std)
+really.normal<-dnorm(grid,3,4)
+#plot normal density function
+plot(grid,really.normal,type='l',col="red"")
+#above graph= lines(grid,really.normal*1000*1). 
+#if did not times by 1000 (sample size) and 1 (bin-width), the line won't show up due to frequency is in raw scale
+
+#q1f 
+#to test that the datas are credibly normal, we use qqplot to test
+qqnorm(q1)
+#as it shows a fairly straight line we can say that the data is credibly normal 
+
+#q1g
+#exponential function: rexp
+expo<-rexp(15,1)
+#?? fn<-dexp(expo,15,1)
+mean(expo)
+var(expo)
+qqnorm(expo)
+#the qqplot for exponential function is no longer a staigth line
+
+#q2 functions!
+sample<-function(x){x^2}
+#betachng() can be used to calculate least-square regression. To assign the function, we need to know the input to calc least-square regression: response,predictors,poits to exclude. (to calc, slops and intercepts)
+
+betachng <- function(resp,pred,excl){
+exc <- unique(excl)
+if(min(excl)<1) {
+print("Invalid Point to be Excluded - Index too small") }
+else if(max(excl)>length(pred)) {
+print("Invalid Point to be Excluded - Index too large") }
+else {
+beta <- lsfit(pred,resp)$coef
+beta.red <- lsfit(pred[-exc],resp[-exc])$coef
+beta - beta.red }
+}
+
+
+#worksheet 4
+
+#ex1
+x<-seq(-3,3,0.01)
+ex1<-function(x){exp(-abs(x))}
+plot(ex1,-3,3,ylab="f(x)",main="Plot of the double exponential function in the range[-3,3]")
+
+#ex2
+ex2<-read.csv("PROB3.csv",header=F,col.names=c("location","age","weight"))
+colnames(ex2)
+attach(ex2)
+#divide subset
+weight.l1<-weight[location==1]
+age.l1<-age[location==1]
+weight.l2<-weight[location==2]
+age.l2<-age[location==2]

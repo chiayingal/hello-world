@@ -1,0 +1,9 @@
+x<-1:100/10
+y<-x*x
+if(dev.cur()==1) 
+plot(x, y)
+as.matrix(x);summary(x)
+#this is line 6!
+plot(x*x,y)
+rm(x,y) # to remove objects in memory
+rm(list=ls()) #remove all objects

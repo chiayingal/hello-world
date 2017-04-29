@@ -1,0 +1,15 @@
+hello<-function() cat("Hello, world!\n")
+hello<-function() cat("Hello, Ann!\n")
+hello<-function() cat("Hello, STAT2008!\n")
+
+
+STAT2008 Tutorial 
+William Lim u4940666@anu.edu.au CBERoom 4.09 Wed 1:30 -3pm
+NB: 
+1. if x<-1:100/10 => x=[0.1...10.0 (vertical column)] => 0.1->10.0=1:100/10
+2. plot(horiz,vertical)
+3. plot(x,y,main="main title", ylab="ylab",xlab="xlab",xlim=c(5,10))
+4. summary()
+5. std<-sqrt(var())
+6. when assign one symbol, it might overwrite what you have done
+(cont. WS2) 

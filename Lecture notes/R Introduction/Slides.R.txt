@@ -1,0 +1,70 @@
+#Introduction to R examples - It’s easier to edit in a text or
+#word file!
+
+#More examples similar to slides 10 to 18
+ls()
+myvec<-c(2,2,3,4,5,8)
+length(myvec)
+myvec[6]
+myvec[-6]
+myvec[1:2]
+myvec[-(1:2)]
+myvec[c(1,2,3)]
+names(myvec)<-c("aa","bb","cc","dd","ee","ff")
+names(myvec)
+myvec["ee"]
+myvec[myvec>4]
+xx<-c(1,2)
+yy<-c(1,3)
+myvec[myvec %in% c(xx,yy)]
+ls()
+
+
+#lsfit regression example - slide 20
+Y <- c(10,20,30,41) 
+X <- c(1,2,3,4) 
+reg.y.on.x <- lsfit(X,Y)
+#How can we tell if we have fit the regression in the correct order?
+plot(X,Y)
+#To access a member of the list reg.y.on.x we use the '$' operator 
+reg.y.on.x
+reg.y.on.x$coef 
+reg.y.on.x$resid
+
+#naming conventions, rm(), ls() – slide 21-22 example
+areallylongvectorname<-c(5,6,7,8)
+ls()
+rm(areallylongvectorname)
+ls()
+
+
+#Setting the working directory – slide 26
+setwd("H:/STAT2008")
+#Getting the working directory
+getwd()
+#reading in a data frame – saved on Wattle, you will
+#need to save this to your working directory
+myfirstdf<-read.csv("readcsv example.csv",header=T)
+myfirstdf
+attach(myfirstdf)
+Student
+Likes.Statistics
+
+
+#plots – slide 31
+ (lot’s more available in R)
+ww<-c(4,5,6,7)
+ss<-c(4,5,6,7)
+plot(ww,ss)
+#joining the corresponding points with line segments.
+lines(ww,ss)
+
+#Script Files – slide 33
+source("myfile.txt")
+sink("myoutputfile.out", append=FALSE, split=TRUE)
+x
+y
+mean(x)
+sink()
+#play around with the append option and output files and split 
+#option to understand how the sink function works

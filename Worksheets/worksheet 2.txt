@@ -1,0 +1,162 @@
+> c<-5
+> square<-function(x){x^2}
+> objects()
+[1] "c"      "square"
+> ls()
+[1] "c"      "square"
+> square(4)
+[1] 16
+> square(c)
+[1] 25
+> rm(list{})
+Error: unexpected '{' in "rm(list{"
+> rm(list=ls())
+> c<-4
+> help(seq)
+starting httpd help server ... done
+> help(rep)
+> x<-c(1,0,0)
+> y<-c(1,2,0)
+> z<-c(1,2,5)
+> cbind(x,y,z)
+     x y z
+[1,] 1 1 1
+[2,] 0 2 2
+[3,] 0 0 5
+> rbind(x,y,z)
+  [,1] [,2] [,3]
+x    1    0    0
+y    1    2    0
+z    1    2    5
+> mymat<-rbind(x,y,z)
+> t(mymat)
+     x y z
+[1,] 1 1 1
+[2,] 0 2 2
+[3,] 0 0 5
+> solve(amat)
+Error in solve(amat) : object 'amat' not found
+> solve(mymat)
+        x    y   z
+[1,]  1.0  0.0 0.0
+[2,] -0.5  0.5 0.0
+[3,]  0.0 -0.2 0.2
+> apply(mymat,2,mean)
+[1] 1.000000 1.333333 1.666667
+> apply(mymat,1,mean)
+        x         y         z 
+0.3333333 1.0000000 2.6666667 
+> t(apply(mymat,1,sort)
++ )
+  [,1] [,2] [,3]
+x    0    0    1
+y    0    1    2
+z    1    2    5
+> t(apply(mymat,2,sort))
+     x y z
+[1,] 1 1 1
+[2,] 0 2 2
+[3,] 0 0 5
+> apply(mymat,2,sort)
+  [,1] [,2] [,3]
+x    1    0    0
+y    1    2    0
+z    1    2    5
+> sweep(mymat, 2, apply(mymat, 2, mean))
+  [,1]       [,2]      [,3]
+x    0 -1.3333333 -1.666667
+y    0  0.6666667 -1.666667
+z    0  0.6666667  3.333333
+> mymat %*% solve(mymat)
+  x             y z
+x 1  0.000000e+00 0
+y 0  1.000000e+00 0
+z 0 -5.551115e-17 1
+> z[3]<-3
+> mymat[3,3]<-3
+> z
+[1] 1 2 3
+> mymat
+  [,1] [,2] [,3]
+x    1    0    0
+y    1    2    0
+z    1    2    3
+> mymat[2,3]<-4
+> mymat
+  [,1] [,2] [,3]
+x    1    0    0
+y    1    2    4
+z    1    2    3
+> women<-read.csv("worksheet2_women.csv",header=F)
+> summary(women)
+       V1              V2       
+ Min.   :156.5   Min.   :49.20  
+ 1st Qu.:160.1   1st Qu.:53.65  
+ Median :166.2   Median :56.40  
+ Mean   :165.5   Mean   :59.47  
+ 3rd Qu.:167.8   3rd Qu.:62.92  
+ Max.   :181.1   Max.   :77.80  
+> str(women)
+'data.frame':   10 obs. of  2 variables:
+ $ V1: num  170 167 157 181 158 ...
+ $ V2: num  71.2 58.2 56 64.5 53 52.4 56.8 49.2 55.6 77.8
+> name(women)<-c("Height","Weight")
+Error in name(women) <- c("Height", "Weight") : 
+  could not find function "name<-"
+> names(women)<-c("Height","Weight")
+> women[,1]
+ [1] 169.6 166.8 157.1 181.1 158.4 165.6 166.7 156.5 168.1 165.3
+> women[,2]
+ [1] 71.2 58.2 56.0 64.5 53.0 52.4 56.8 49.2 55.6 77.8
+> stem(Height)
+Error in stem(Height) : object 'Height' not found
+> attach(women)
+> Weight
+ [1] 71.2 58.2 56.0 64.5 53.0 52.4 56.8 49.2 55.6 77.8
+> Height
+ [1] 169.6 166.8 157.1 181.1 158.4 165.6 166.7 156.5 168.1 165.3
+> stem(Height)
+
+  The decimal point is 1 digit(s) to the right of the |
+
+  15 | 778
+  16 | 
+  16 | 56778
+  17 | 0
+  17 | 
+  18 | 1
+
+> stem(Weight)
+
+  The decimal point is 1 digit(s) to the right of the |
+
+  4 | 9
+  5 | 236678
+  6 | 5
+  7 | 18
+
+> hist(Height)
+> hist(Weight)
+> boxplot(Height,Weight)
+> plot(Height,Weight,type="l")
+> plot(Height,Weight)
+> plot(Height,Weight,type="b",lty=2,col="blue")
+> abline(lsfit(Height,Weight)$coef)
+> abline(lm(Weight~Height))
+
+
+
+
+
+Tutorial 1 (cont)
+
+1. BMI<-function(x,y){x/(y^2)}
+2. c() is a vector fn (e.g. x<-c(1,0,0) = X=[1 0 0 (column)])
+3. cbind(x,y,z) = colume bind
+4. rbind(x,y,z) = row bind
+5. cbind and rbind => transformation => ie cbind =t(rbind())
+6. matrix%*%matrix = Matrix^2
+7. matrix%*% solve(matrix) = matrix*matrix^-1
+8. mymat[row,col] => mymat[,1] (1 column extrac); mymat[1,] (1 row extracts); mymat[2,3](row 2 col 3 number extrac)
+9. mymat[row,col]<-2 => change the number of that position to 2
+10. women<-read.csv("worksheet2_women.csv",header=F)=> no heading

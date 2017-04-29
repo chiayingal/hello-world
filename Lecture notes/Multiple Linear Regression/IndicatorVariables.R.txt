@@ -1,0 +1,112 @@
+# Indicators variables in regression
+
+# In this example, we will use the Prostate cancer data from the assignments. 
+# Assuming you have already run followed the instructions in Assignment 1 and 
+# run install.packages() to install the Faraway library
+
+library(faraway)
+
+prostate
+help(prostate)
+attach(prostate)
+
+# Let's have a good look at the svi variable:
+
+svi
+unique(svi)
+hist(svi)
+qqnorm(svi)
+
+plot(svi, lcavol)
+plot(factor(svi), lcavol)
+
+# We can use svi to divide our response variable into two sample groups:
+
+lcavol.svi0 <- lcavol[svi==0]
+lcavol.svi0
+
+lcavol.svi1 <- lcavol[svi==1]
+lcavol.svi1
+
+# Here is the classic two sample t-test from a first year statistics course:
+
+help(t.test)
+t.test(lcavol.svi0, lcavol.svi1, var.equal=TRUE)
+
+# Note the similarities with using svi as an indicator variable in a
+# (simple) linear regression model:
+
+prostate.lm <- lm(lcavol ~ svi)
+plot(prostate.lm, which=c(1,2,4))
+
+anova(prostate.lm)
+summary(prostate.lm)
+
+# In linear regression, we are assuming variances constant, which is the
+# same as assuming equal variance in the classic two sample t-test.
+# But are the two sample variances equal?
+
+var(lcavol.svi0)
+var(lcavol.svi1)
+
+help(var.test)
+var.test(lcavol.svi0, lcavol.svi1)
+
+# Here's the t-test without the equal variance assumption, which turns
+# out to be a more powerful test (larger t statistic, smaller p-value
+# and narrower confidence interval):
+
+help(t.test)
+t.test(lcavol.svi0, lcavol.svi1)
+
+# What if we now include svi in a multiple regression model:
+
+prostate.lm2 <- lm(lcavol ~ svi + lpsa)
+plot(prostate.lm2, which=c(1,2,4))
+
+anova(prostate.lm2)
+summary(prostate.lm2)
+vif(prostate.lm2)
+
+# Note the contrast between the p-value for svi in the ANOVA table
+# and in the summary table of coefficients - despite the low VIFs,
+# we are obviously dealing with inter-related explanatory variables:
+
+prostate.lm2a <- lm(lcavol ~ lpsa + svi)
+plot(prostate.lm2a, which=c(1,2,4))
+
+anova(prostate.lm2a)
+summary(prostate.lm2a)
+vif(prostate.lm2a)
+
+# To better interpret the model, we could try a plot:
+
+plot(lpsa, lcavol, type="n", main="Relationship between cancer tumour volume\n and prostate specific antigen test", xlab="log(PSA)", ylab="log(Cancer Volume)")
+points(lpsa[svi==0],lcavol.svi0)
+points(lpsa[svi==1],lcavol.svi1,pch=16)
+coef(prostate.lm2a)
+abline(coef(prostate.lm2a)[1],coef(prostate.lm2a)[2])
+abline(coef(prostate.lm2a)[1]+coef(prostate.lm2a)[3],coef(prostate.lm2a)[2],lty=2)
+legend(3.8,-0.6,c("SVI = Yes", "SVI = No "), pch=c(16,1), lty=c(2,1))
+title(sub="SVI = seminal vesicle invasion")
+
+# For obvious reasons, this is called a "parallel lines" analysis of 
+# covariance model - see chapter 13 of the Faraway text.
+
+# What happens if we include an interaction term in the model?
+
+prostate.lm3 <- lm(lcavol ~ lpsa * svi)
+plot(prostate.lm3, which=c(1,2,4))
+
+anova(prostate.lm3)
+summary(prostate.lm3)
+vif(prostate.lm3)
+
+plot(lpsa, lcavol, type="n", main="Relationship between cancer tumour volume\n and prostate specific antigen test", xlab="log(PSA)", ylab="log(Cancer Volume)")
+points(lpsa[svi==0],lcavol.svi0)
+points(lpsa[svi==1],lcavol.svi1,pch=16)
+coef(prostate.lm3)
+abline(coef(prostate.lm3)[1],coef(prostate.lm3)[2])
+abline(coef(prostate.lm3)[1]+coef(prostate.lm3)[3],coef(prostate.lm3)[2]+coef(prostate.lm3)[4],lty=2)
+legend(3.8,-0.6,c("SVI = Yes", "SVI = No "), pch=c(16,1), lty=c(2,1))
+title(sub="SVI = seminal vesicle invasion")

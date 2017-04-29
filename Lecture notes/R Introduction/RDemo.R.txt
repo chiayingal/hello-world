@@ -1,0 +1,102 @@
+# A demonstration of the Central Limit Theorem
+
+# Example from a first year exam of a two-sample F test:
+f <- c(0:2500)/100
+F <- df(f, 3, 100)
+plot(c(-0.04,24), c(-0.04, 0.75), type="n", xaxp=c(0,24,24), yaxp=c(0,0.7,7), xlab="", ylab="", main="F pdf with 3, 100 df")
+lines(f, F, lwd=3)
+abline(0,0)
+
+# Show the rejection region:
+cv <- qf(0.95, 3, 100) 
+Fcv <- df(cv, 3, 100)
+polygon(c(cv,f[f>cv]), c(0,F[f>cv]), density=30)
+points(cv,0,pch=3)
+text(cv, -0.025, labels=as.character(round(cv,3)))
+
+# Show the oberved test statistic:
+obsF <- 31083/1375
+polygon(c(obsF,f[f>obsF]), c(0,F[f>obsF]), density=60, angle=135)
+points(obsF,0,pch=3)
+text(obsF, -0.025, labels=as.character(round(obsF,3)))
+
+# Add the p-value:
+lines(c(obsF,25),c(0,0),lwd=4)
+
+# Now some data simulation to illustrate the CLT in action:
+z <- c(-400:400)/100
+Z <- dnorm(z)
+plot(z,Z)
+abline(0,0)
+
+sample <- rnorm(30)
+hist(sample)
+
+sample <- rnorm(300)
+hist(sample)
+
+sample <- rnorm(3000)
+hist(sample)
+
+sample <- rnorm(30000)
+hist(sample)
+
+CLTdemo <- function(n, samples){
+means <- rep(0,samples)
+for (i in 1:samples) {sample <- rnorm(n); means[i] <- mean(sample)}
+hist(means)}
+
+CLTdemo(30, 30)
+CLTdemo(30, 300)
+CLTdemo(300, 300)
+CLTdemo(3000, 3000)
+
+sample <- rf(30, 3, 100)
+hist(sample)
+
+sample <- rf(300, 3, 100)
+hist(sample)
+
+sample <- rf(3000, 3, 100)
+hist(sample)
+
+sample <- rf(30000, 3, 100)
+hist(sample)
+
+CLTdemo2 <- function(n, samples){
+means <- rep(0,samples)
+for (i in 1:samples) {sample <- rf(n, 3, 100); means[i] <- mean(sample)}
+hist(means)}
+
+CLTdemo2(30, 30)
+CLTdemo2(30, 300)
+CLTdemo2(300, 300)
+CLTdemo2(3000, 3000)
+
+# House-keeping:
+
+ls()
+rm(F)
+ls()
+search()
+ls()
+getwd()
+setwd("P:/R")
+getwd()
+.First <- function(){setwd("P:/R")}
+
+# A quick regression example:
+
+search()
+ls()
+ls(pos=6)
+women
+attributes(women)
+attach(women)
+search()
+ls(pos=2)
+plot(height, weight)
+lsfit(height,weight)
+reg <- lsfit(height,weight)
+abline(reg$coef)
+plot(height, reg$residuals)
