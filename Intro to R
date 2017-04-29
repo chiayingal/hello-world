@@ -1,0 +1,21 @@
+#R introduction
+R environment allow us to:
+  1. Manipulating data
+  2. Use graohics to analyse data
+  3. Perform calculations
+  4. Perform statistical analysis
+  5. Very similar to the programming language called"S", "S-Plus"
+  
+#R Workspace
+* Entering commands:
+  - commands and assignments executed or evaluated immediately
+  - seperated by new line (Enter/Return) or secicolom
+  - recall commands w/ ↑ or ↓
+  - case sensitive
+  - every command is some sort of function that does something
+  - data and function are both objects stored in R
+* R us an interactive system
+* You type a command and R returns an answer. 
+* Commands are either: 
+  - Expressions: sequence of symbols interpreted by R
+  - Assignments (of a value to a name): also evaluates an expression and passes the value to a variable but the result is not automatically printed. 
